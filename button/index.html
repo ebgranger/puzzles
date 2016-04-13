@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta description="Create a button that creates another button, each button keeps track of how many times it has been clicked" />
+	<title>Create a button that makes another button</title>
+</head>
+<body>
+	<div class="js-button-container">
+		<button class="js-button" id="button-0" data-clicks-count="0">
+			I'm a button, I've been clicked 0 times
+		</button>
+	</div>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-git.js"></script>
+	<script type="text/javascript">
+		// this is how I've grown to write all of my Self Executing Anonymous Functions 
+		(function($, window, document) {
+
+			var tally = 0,
+			iterate = function(tally) {
+				tally++;
+			};
+
+			return CreateButton = {
+
+				init : function() {
+					this.bind();
+				},
+
+				bind : function(){
+					$(document).on('click', '.js-button', function(event) {
+						iterate();
+						CreateButton.makeNewButton();
+
+						var count = $(this).data('clicks-count');
+						count++;
+
+						$(this).data('clicks-count', count);
+						$(this).attr('data-clicks-count', count);
+
+						var text = $(this).html().replace(/\d/, count);
+
+						$(this).text(text);				
+					});
+				},
+
+				makeNewButton : function() {
+					$('.js-button-container').append('<button class="js-button" id="button-' + tally +'" data-clicks-count="0">I\'m a button, I\'ve been clicked 0 times</button>');
+				}
+			};
+
+		}(jQuery, window, document));
+
+		window.CreateButton.init();
+
+	</script>
+</body>
+</html>

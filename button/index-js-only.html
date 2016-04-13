@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta description="Create a button that creates another button, each button keeps track of how many times it has been clicked" />
+	<title>Create a button that makes another button</title>		
+	<style type="text/css">
+		.js-button {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<div class="js-button-container">
+		<button class="js-button" id="button-0" data-clicks-count="0">
+			I'm a button, I've been clicked 0 times
+		</button>
+	</div>
+	<script type="text/javascript">
+		// this is how I've grown to write all of my Self Executing Anonymous Functions 
+		(function(window, document) {
+			'use strict';
+
+			var totalClickCount = 0,
+				buttonElements = document.getElementsByClassName('js-button'),
+				buttonContainer = document.getElementsByClassName('js-button-container')[0],
+				newButton,
+				newButtonText = '',
+				bindClickToButton,
+				Button = {};
+
+			Button = { 
+				init : function() {
+					this.eventBindings();
+				},
+
+				eventBindings : function() { 
+					// @TODO figure out a better way to deal with the context
+					this.bindClickToButton(buttonElements, this);
+				},
+
+				bindClickToButton : function(buttons, context) {
+					Array.prototype.forEach.call(buttons, function(element, index, elements){
+						element.addEventListener('click', context.makeNewButton, false);
+						element.addEventListener('click', context.updateClicks, false);
+					});
+				},
+
+				updateClicks : function(event) {
+					event.target.dataset.clicksCount = parseInt(event.target.dataset.clicksCount) + 1;
+					event.target.innerHTML = 'I\'m a button, I\'ve been clicked ' + event.target.dataset.clicksCount + ' times';
+				},
+
+				makeNewButton : function(event) {
+					totalClickCount++;
+					newButton = document.createElement('button');
+					
+					newButtonText = document.createTextNode('I\'m a button, I\'ve been clicked 0 times');
+					newButton.appendChild(newButtonText);
+					
+					newButton.id = 'button-' + totalClickCount;
+					newButton.className = 'js-button';
+					newButton.dataset.clicksCount = 0;
+
+					event.target.insertAdjacentHTML('afterend', newButton.outerHTML);
+
+					Button.bindClickToButton([event.target.nextElementSibling], Button);
+				}
+			};
+
+			// returning module to global scope
+			window.Button = Button;
+
+		})(window, document);
+
+		window.Button.init();
+
+	</script>
+</body>
+</html>

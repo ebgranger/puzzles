@@ -6,7 +6,7 @@
 </head>
 <body>
 	<div class="js-button-container">
-		<button class="js-button" id="button-0" data-clicks-count="0">
+		<button class="js-button" id="button-0" data-clicks-count="0" style="display: block;">
 			I'm a button, I've been clicked 0 times
 		</button>
 	</div>
@@ -23,13 +23,14 @@
 			return CreateButton = {
 
 				init : function() {
+					console.log('boop');
 					this.bind();
 				},
 
 				bind : function(){
 					$(document).on('click', '.js-button', function(event) {
 						iterate();
-						CreateButton.makeNewButton();
+						CreateButton.makeNewButton(this);
 
 						var count = $(this).data('clicks-count');
 						count++;
@@ -43,8 +44,8 @@
 					});
 				},
 
-				makeNewButton : function() {
-					$('.js-button-container').append('<button class="js-button" id="button-' + tally +'" data-clicks-count="0">I\'m a button, I\'ve been clicked 0 times</button>');
+				makeNewButton : function(element) {
+					$(element).after('<button class="js-button" id="button-' + tally +'" data-clicks-count="0" style="display: block;">I\'m a button, I\'ve been clicked 0 times</button>');
 				}
 			};
 

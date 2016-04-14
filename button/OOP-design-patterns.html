@@ -24,13 +24,33 @@
 
 			var buttonCount = 0;
 
-			var Main = (function(){
-				init = function() {
-					var button = new Button(buttonCount);
-					button.addButton();
+			var Page = (function(){
+				var buttonContainer = document.getElementsByClassName('js-button-container')[0],
+					self = this;
+
+				return {
+					init : function() {
+						this.addButton();
+					},
+					addButton : function(event) {
+						if(event && buttonContainer.children.length) {
+							var siblingButton = new Button(++buttonCount);
+							PageUtils.insertAfter(siblingButton.element, event.target);
+						} else {
+							var button = new Button(buttonCount);
+							buttonContainer.appendChild(button.element);
+						}
+					}
 				};
 			})();
 
+			var PageUtils = (function(){
+				return {
+					insertAfter : function(newNode, referenceNode) { // taken from stackoverflow 
+					    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+					}
+				};
+			})();
 
 			// Button Constructor
 			function Button(buttonCount) {
@@ -40,14 +60,12 @@
 					button =  document.createElement('button');
 					button.dataset.clickCount = clickCount || 0;
 				var buttonText = document.createTextNode('I\'m a button, I\'ve been clicked ' + button.dataset.clickCount + ' times'),
-					buttonClassName = 'js-button',
-					buttonContainer = document.getElementsByClassName('js-button-container')[0];
+					buttonClassName = 'js-button';
 
 				// create button
 				button.appendChild(buttonText);
 				button.id = buttonCount;
 				button.className = buttonClassName;
-
 
 				var updateClicks = function(event) {
 					if(event) {
@@ -55,32 +73,21 @@
 						event.target.innerHTML = 'I\'m a button, I\'ve been clicked ' + event.target.dataset.clickCount + ' times';
 					}
 				};
-
-				var addButton = function(event) {
-					if(event && buttonContainer.children.length) {
-						var siblingButton = new Button(++buttonCount);
-						buttonContainer.appendChild(siblingButton.button);
-					} else {
-						buttonContainer.appendChild(button);
-					}
-				};
-
-
+ 
 				// event listeners
 				button.addEventListener('click', updateClicks, false);
-				button.addEventListener('click', addButton, false);
+				button.addEventListener('click', Page.addButton, false);
 
 				return {
-					button: button,
-					addButton: addButton
+					element: button
 				};
 			}
 
-			window.Main = Main;
+			window.Page = Page;
 
 		})(window, document);
 
-		window.Main.init();
+		window.Page.init();
 
 	</script>
 </body>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta description="Create a button that creates another button, each button keeps track of how many times it has been clicked" />
+	<title>Create a button that makes another button</title>		
+	<style type="text/css">
+		.js-button {
+			display: block;
+		}
+		span {
+			display: block;
+		    float: left;
+		    margin-right: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="js-button-container">
+	</div>
+	<script type="text/javascript">
+		// this is how I've grown to write all of my Self Executing Anonymous Functions 
+		(function(window, document) {
+			'use strict';
+
+			var buttonCount = 0;
+
+			var Main = (function(){
+				init = function() {
+					var button = new Button(buttonCount);
+					button.addButton();
+				};
+			})();
+
+
+			// Button Constructor
+			function Button(buttonCount) {
+				// private vars
+				var self = this,
+					clickCount,
+					button =  document.createElement('button');
+					button.dataset.clickCount = clickCount || 0;
+				var buttonText = document.createTextNode('I\'m a button, I\'ve been clicked ' + button.dataset.clickCount + ' times'),
+					buttonClassName = 'js-button',
+					buttonContainer = document.getElementsByClassName('js-button-container')[0];
+
+				// create button
+				button.appendChild(buttonText);
+				button.id = buttonCount;
+				button.className = buttonClassName;
+
+
+				var updateClicks = function(event) {
+					if(event) {
+						event.target.dataset.clickCount = parseInt(event.target.dataset.clickCount) + 1;
+						event.target.innerHTML = 'I\'m a button, I\'ve been clicked ' + event.target.dataset.clickCount + ' times';
+					}
+				};
+
+				var addButton = function(event) {
+					if(event && buttonContainer.children.length) {
+						var siblingButton = new Button(++buttonCount);
+						buttonContainer.appendChild(siblingButton.button);
+					} else {
+						buttonContainer.appendChild(button);
+					}
+				};
+
+
+				// event listeners
+				button.addEventListener('click', updateClicks, false);
+				button.addEventListener('click', addButton, false);
+
+				return {
+					button: button,
+					addButton: addButton
+				};
+			}
+
+			window.Main = Main;
+
+		})(window, document);
+
+		window.Main.init();
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta description="Create a button that creates another button, each button keeps track of how many times it has been clicked" />
+	<title>Create a button that makes another button</title>		
+	<style type="text/css">
+		.js-button {
+			display: block;
+		}
+		span {
+			display: block;
+		    float: left;
+		    margin-right: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="js-button-container">
+	</div>
+	<script type="text/javascript">
+		// this is how I've grown to write all of my Self Executing Anonymous Functions 
+		(function(window, document) {
+			'use strict';
+
+			var ButtonUtilities = {},
+				Button = {},
+				buttonContainer = document.getElementsByClassName('js-button-container')[0],
+				buttonCount = 0,
+				clickCount = 0;
+
+			Button = function(event){
+				// public variables
+				this.buttonCount = buttonCount;
+				this.event = event;
+
+				// private variables
+				var button = document.createElement('button'), 
+					buttonText = document.createTextNode('I\'m a button, I\'ve been clicked ' + clickCount + ' times'),
+					butonClassName = 'js-button',
+					self = this; // capture context
+
+				// set object properties
+				this.button = button;
+				this.buttonText = buttonText;
+				this.butonClassName = butonClassName;
+				this.clickCount = clickCount;
+
+				// construct button
+				this.button.appendChild(this.buttonText);
+
+				this.button.id = 'button-' + this.buttonCount;
+				this.button.className = this.butonClassName;
+				this.button.dataset.clickCount = clickCount;
+
+				// add event listeners
+				buttonContainer.addEventListener('click', Button, false);
+				buttonContainer.addEventListener('click', updateClicks, false);
+				buttonContainer.addEventListener('click', placeButton, false);
+		 
+				// private methods
+				var updateClicks = function(event) {
+					if(event) {
+						self.clickCount++;
+						event.target.dataset.clickCount = parseInt(event.target.dataset.clickCount) + 1;
+						event.target.innerHTML = 'I\'m a button, I\'ve been clicked ' + event.target.dataset.clickCount + ' times';
+					}
+				}(this.event);
+
+				var placeButton = function(event) {
+
+					var newNode = document.createElement('span');
+					var newNodeText = document.createTextNode(self.buttonCount);
+					newNode.appendChild(newNodeText);
+
+					if(buttonContainer.children.length) {
+						event.target.insertAdjacentHTML('afterend', self.button.outerHTML);
+			
+						document.getElementById(self.button.id).parentNode.insertBefore(newNode, document.getElementById(self.button.id));
+
+					} else {
+						buttonContainer.appendChild(self.button);
+						buttonContainer.insertBefore(newNode, self.button);
+					}
+				}(this.event);
+
+				buttonCount++;
+			};
+
+
+			// returning module to global scope
+			window.Button = new Button();
+
+		})(window, document);
+
+	</script>
+</body>
+</html>

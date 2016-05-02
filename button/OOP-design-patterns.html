@@ -4,7 +4,7 @@
 	<meta description="Create a button that creates another button, each button keeps track of how many times it has been clicked" />
 	<title>Create a button that makes another button</title>		
 	<style type="text/css">
-		.js-button {
+		.button {
 			display: block;
 		}
 		span {
@@ -25,8 +25,7 @@
 			var buttonCount = 0;
 
 			var Page = (function(){
-				var buttonContainer = document.getElementsByClassName('js-button-container')[0],
-					self = this;
+				var buttonContainer = document.getElementsByClassName('js-button-container')[0];
 
 				return {
 					init : function() {
@@ -55,12 +54,11 @@
 			// Button Constructor
 			function Button(buttonCount) {
 				// private vars
-				var self = this,
-					clickCount,
+				var clickCount,
 					button =  document.createElement('button');
 					button.dataset.clickCount = clickCount || 0;
 				var buttonText = document.createTextNode('I\'m a button, I\'ve been clicked ' + button.dataset.clickCount + ' times'),
-					buttonClassName = 'js-button';
+					buttonClassName = 'js-button button';
 
 				// create button
 				button.appendChild(buttonText);
@@ -69,7 +67,7 @@
 
 				var updateClicks = function(event) {
 					if(event) {
-						event.target.dataset.clickCount = parseInt(event.target.dataset.clickCount) + 1;
+						event.target.dataset.clickCount = parseInt(event.target.dataset.clickCount, 10) + 1;
 						event.target.innerHTML = 'I\'m a button, I\'ve been clicked ' + event.target.dataset.clickCount + ' times';
 					}
 				};
